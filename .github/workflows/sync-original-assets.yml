@@ -1,0 +1,43 @@
+name: Sync original RayNayel media
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "assets/images/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-media:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download approved original media
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/images
+          base="https://raynayel.com.au/wp-content/uploads/2026/07"
+          curl -L --fail --retry 3 --connect-timeout 20 "$base/Locate-high-yielding-properties-and-your-dream-home-scaled.webp" -o assets/images/home-buyers.webp
+          curl -L --fail --retry 3 --connect-timeout 20 "$base/vendors-advocacy.webp" -o assets/images/vendor-home.webp
+          curl -L --fail --retry 3 --connect-timeout 20 "$base/83A1375-1536x1024-copy-1024x683.webp" -o assets/images/process.webp
+          curl -L --fail --retry 3 --connect-timeout 20 "$base/83A1362-1507x2048-copy.webp" -o assets/images/tariq-butt.webp
+          curl -L --fail --retry 3 --connect-timeout 20 "$base/raynayel-property-advocate-3-scaled.webp" -o assets/images/about-property.webp
+          curl -L --fail --retry 3 --connect-timeout 20 "$base/raynayel-property-advocate-4-scaled.webp" -o assets/images/buyers.webp
+          curl -L --fail --retry 3 --connect-timeout 20 "$base/raynayel-property-advocate-2-scaled.webp" -o assets/images/vendor.webp
+          curl -L --fail --retry 3 --connect-timeout 20 "$base/raynayel-property-advocate-5-1024x683.webp" -o assets/images/property.webp
+      - name: Commit media when changed
+        shell: bash
+        run: |
+          if git diff --quiet -- assets/images && [ -n "$(git ls-files assets/images)" ]; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/images
+          git commit -m "Add original RayNayel image assets"
+          git push

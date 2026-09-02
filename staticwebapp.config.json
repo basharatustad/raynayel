@@ -1,0 +1,23 @@
+{
+  "routes": [
+    {
+      "route": "/api/*",
+      "allowedRoles": ["anonymous"]
+    }
+  ],
+  "responseOverrides": {
+    "404": {
+      "rewrite": "/404.html",
+      "statusCode": 404
+    }
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Content-Security-Policy": "default-src 'self'; img-src 'self' data: https://raynayel.com.au; style-src 'self'; script-src 'self'; connect-src 'self'; frame-src https://www.youtube.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+  },
+  "mimeTypes": {
+    ".webp": "image/webp"
+  }
+}
