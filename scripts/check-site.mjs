@@ -50,6 +50,17 @@ for (const name of ["name=\"name\"", "name=\"email\"", "name=\"phone\"", "name=\
   if (!contact.includes(name)) errors.push("Contact form is missing " + name);
 }
 
+const azureWorkflowPath = ".github/workflows/azure-static-web-apps-victorious-field-0379ce500.yml";
+if (fs.existsSync(path.join(root, azureWorkflowPath))) {
+  const workflow = fs.readFileSync(path.join(root, azureWorkflowPath), "utf8");
+  if (!/app_location:\s*["']?\/["']?\s*(?:#.*)?$/m.test(workflow)) {
+    errors.push("Azure Static Web Apps workflow must deploy from repository root /");
+  }
+  if (/app_location:\s*["']?\.\/about["']?/m.test(workflow)) {
+    errors.push("Azure Static Web Apps workflow must not deploy only the about folder");
+  }
+}
+
 if (errors.length) {
   console.error(errors.join("\n"));
   process.exit(1);
